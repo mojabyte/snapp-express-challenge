@@ -6,6 +6,7 @@ import ReactPaginate from 'react-paginate';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 
 import { useProducts } from './data/HomeQueryHooks';
+import ProductItem from './components/product-item';
 
 const Home = () => {
   const [page, setPage] = useQueryParam('page', NumberParam);
@@ -23,10 +24,10 @@ const Home = () => {
     }
 
     return (
-      <div>
-        {products.product_variations.map(({ id, title }, index) => (
-          <div key={id}>
-            {index + 1}. {title}
+      <div className="flex-1 grid grid-cols-6 gap-3 m-3">
+        {products.product_variations.map(data => (
+          <div className="flex" key={data.id}>
+            <ProductItem data={data} />
           </div>
         ))}
       </div>
@@ -34,7 +35,7 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col flex-1 h-full">
+    <div className="flex flex-col flex-1 h-full bg-gray-100">
       <div>
         <label>page size:</label>
         <input
@@ -44,7 +45,9 @@ const Home = () => {
           onChange={e => setPageSize(e.target.valueAsNumber)}
         />
       </div>
+
       <div className="flex flex-1">{renderList()}</div>
+
       <div dir="ltr">
         <ReactPaginate
           className="pagination"
