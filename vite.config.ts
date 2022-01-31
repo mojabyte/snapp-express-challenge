@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/mobile/v2/': {
-        target: 'https://api.snapp.express/mobile/v2/',
+        target: 'https://api.snapp.express',
         changeOrigin: true,
       },
     },
