@@ -2,6 +2,8 @@ import './styles/home.scss';
 
 import React from 'react';
 import { useQueryParam, NumberParam } from 'use-query-params';
+import ReactPaginate from 'react-paginate';
+import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 
 import { useProducts } from './data/HomeQueryHooks';
 
@@ -32,18 +34,7 @@ const Home = () => {
   };
 
   return (
-    <div>
-      <div>{renderList()}</div>
-      <div>
-        <label>page:</label>
-        <input
-          className="border"
-          type="number"
-          value={page}
-          onChange={e => setPage(e.target.valueAsNumber)}
-        />
-      </div>
-      <button onClick={() => setPage(page => page + 1)}>next</button>
+    <div className="flex flex-col flex-1 h-full">
       <div>
         <label>page size:</label>
         <input
@@ -51,6 +42,21 @@ const Home = () => {
           type="number"
           value={pageSize}
           onChange={e => setPageSize(e.target.valueAsNumber)}
+        />
+      </div>
+      <div className="flex flex-1">{renderList()}</div>
+      <div dir="ltr">
+        <ReactPaginate
+          className="pagination"
+          nextLabel={<BiChevronRight />}
+          previousLabel={<BiChevronLeft />}
+          initialPage={page}
+          onPageChange={page => {
+            setPage(page.selected);
+          }}
+          pageCount={products ? products.meta.pagination.total / pageSize : 10}
+          pageLabelBuilder={page => page.toLocaleString('fa')}
+          renderOnZeroPageCount={null}
         />
       </div>
     </div>
