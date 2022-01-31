@@ -1,12 +1,13 @@
 import './styles/home.scss';
 
-import React, { useState } from 'react';
+import React from 'react';
+import { useQueryParam, NumberParam } from 'use-query-params';
 
 import { useProducts } from './data/HomeQueryHooks';
 
 const Home = () => {
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(12);
+  const [page, setPage] = useQueryParam('page', NumberParam);
+  const [pageSize, setPageSize] = useQueryParam('size', NumberParam);
   const { data: products, isLoading, error } = useProducts({ page, size: pageSize });
   console.log(products);
 
