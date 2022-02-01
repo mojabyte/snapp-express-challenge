@@ -69,11 +69,13 @@ export type SortResultItem = {
   translation: string;
 };
 
+export type SortMeta = { results: SortResultItem[]; default_title: string };
+
 export type ResponseMeta = {
   categoryTitle: string;
   filter: { results: FilterResultItem[]; default_title: string };
   pagination: { size: number; page: number; total: number };
-  sort: { results: SortResultItem[]; default_title: string };
+  sort: SortMeta;
 };
 
 export type ProductsResponse = {

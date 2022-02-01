@@ -1,26 +1,20 @@
 import './styles/home.scss';
 
 import React, { useCallback, useEffect, useMemo } from 'react';
-import ReactPaginate from 'react-paginate';
-import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PulseLoader } from 'react-spinners';
 import { useQueryParam, StringParam } from 'use-query-params';
-import { useMediaQuery } from 'react-responsive';
 
 import { useProducts } from './data/HomeQueryHooks';
-import ProductItem from './components/product-item';
 import { usePaginatedList } from './hooks/usePaginatedList';
+import ProductItem from './components/product-item';
+import Paginated from './components/paginated';
+import Header from './components/header';
+import Loading from './components/loading';
 
 const Home = () => {
   const { ref, page, setPage, pageSize } = usePaginatedList();
 
-  const [sort, setSort] = useQueryParam('sort', StringParam);
-
-  const isMobile = useMediaQuery({ maxWidth: 580 });
-  const isTablet = useMediaQuery({
-    maxWidth: 768,
-  });
+  const [sort] = useQueryParam('sort', StringParam);
 
   const {
     data: products,
@@ -43,29 +37,6 @@ const Home = () => {
     const fillSize = pageSize - products?.product_variations.length;
     return [...new Array(fillSize > 0 ? fillSize : 0)].map(() => Math.random());
   }, [pageSize, products?.product_variations.length]);
-
-  const renderSort = useCallback(() => {
-    if (isLoading) {
-      return null;
-    }
-
-    return (
-      <>
-        <label className="px-2">مرتب سازی: </label>
-        <select
-          onChange={e => setSort(e.target.value === 'default' ? undefined : e.target.value)}
-          value={sort}
-        >
-          <option value="default">{products?.meta.sort.default_title}</option>
-          {products?.meta.sort.results.map(({ name, translation, enabled }) => (
-            <option key={name} value={name}>
-              {translation}
-            </option>
-          ))}
-        </select>
-      </>
-    );
-  }, [products?.meta.sort.results, sort]);
 
   const renderList = useCallback(() => {
     if (isLoading) {
@@ -99,41 +70,16 @@ const Home = () => {
     );
   }, [isLoading, error, products?.product_variations, fillArray]);
 
-  const renderLoading = useCallback(() => {
-    if (isLoading || isPreviousData) {
-      return (
-        <div className="absolute top-0 left-0 bottom-0 right-0 flex justify-center items-center backdrop-blur-sm">
-          <PulseLoader color="var(--color-accent)" size={26} />
-        </div>
-      );
-    }
-    return null;
-  }, [isLoading, isPreviousData]);
-
   return (
     <div ref={ref} className="flex flex-col flex-1 h-full bg-gray-100">
-      <div className="flex items-center p-4 h-16 bg-white shadow-sm">{renderSort()}</div>
+      <Header sortData={products?.meta.sort} />
+
       <div className="flex flex-1 overflow-hidden relative">
         {renderList()}
-        {renderLoading()}
+        <Loading isLoading={isLoading || isPreviousData} />
       </div>
 
-      <div dir="ltr">
-        <ReactPaginate
-          className="pagination"
-          nextLabel={<BiChevronRight />}
-          previousLabel={<BiChevronLeft />}
-          initialPage={page}
-          forcePage={page}
-          onPageChange={page => {
-            setPage(page.selected);
-          }}
-          marginPagesDisplayed={isMobile ? 0 : isTablet ? 1 : 3}
-          pageCount={pageCount}
-          pageLabelBuilder={page => page.toLocaleString('fa')}
-          renderOnZeroPageCount={null}
-        />
-      </div>
+      <Paginated page={page} setPage={setPage} pageCount={pageCount} />
     </div>
   );
 };

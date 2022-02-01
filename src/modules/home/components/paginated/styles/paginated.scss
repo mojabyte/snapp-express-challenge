@@ -1,0 +1,25 @@
+.paginated {
+  @apply flex flex-row justify-center bg-accent text-white text-xs;
+
+  & li {
+    @apply flex py-1 m-2;
+
+    & svg {
+      display: unset;
+    }
+
+    & a {
+      @apply flex flex-1 text-center w-8 h-8 rounded-full items-center justify-center border;
+      border-color: transparent;
+
+      &:hover {
+        border-color: white;
+        transition: border 200ms ease-out;
+      }
+    }
+
+    &.selected a {
+      border-color: white;
+    }
+  }
+}
