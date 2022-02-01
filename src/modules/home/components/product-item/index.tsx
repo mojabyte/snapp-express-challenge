@@ -1,3 +1,5 @@
+import './styles/product-item.scss';
+
 import React from 'react';
 import { ProductItem as ProductItemType } from 'modules/home/types/HomeTypes';
 
@@ -7,11 +9,12 @@ type ProductItemProps = {
 
 const ProductItem: React.FC<ProductItemProps> = ({ data }) => {
   return (
-    <div className="flex flex-col h-full shadow-md rounded-lg items-center justify-between p-3 bg-white">
-      <div className="flex flex-1 items-center justify-center p-5">
+    <div className="product-item-container">
+      <div className="image-wrapper">
         <img src={data.images[0].imageSrc} />
       </div>
-      <div className="p-1 text-center text-xs h-10">{data.title}</div>
+      <p className="title">{data.title}</p>
+      <p className="price">{data.price.toLocaleString('fa')} تومان</p>
     </div>
   );
 };

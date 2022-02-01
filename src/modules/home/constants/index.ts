@@ -7,9 +7,9 @@ export const WIDTH_BREAKPOINTS = {
 };
 
 export const HEIGHT_BREAKPOINTS = {
-  sm: 750,
-  md: 1140,
-  lg: 1500,
+  sm: 580,
+  md: 840,
+  lg: 1200,
   xl: 2000,
   '2xl': 2500,
 };

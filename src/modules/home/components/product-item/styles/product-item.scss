@@ -1,0 +1,22 @@
+.product-item-container {
+  @apply flex flex-col h-full shadow-md rounded-lg justify-between p-3 bg-white;
+  min-height: 0;
+
+  & .image-wrapper {
+    @apply flex items-center justify-center p-5;
+    max-height: 8rem;
+
+    & img {
+      max-height: 8rem;
+    }
+  }
+
+  & .title {
+    @apply flex p-1 text-center text-xs h-10;
+  }
+
+  & .price {
+    @apply flex items-center p-1 text-lg mx-5 my-2;
+    max-height: 4rem;
+  }
+}

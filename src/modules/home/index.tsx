@@ -54,7 +54,7 @@ const Home = () => {
 
   return (
     <div ref={ref} className="flex flex-col flex-1 h-full bg-gray-100">
-      <div className="flex flex-1">{renderList()}</div>
+      <div className="flex flex-1 overflow-hidden">{renderList()}</div>
 
       <div dir="ltr">
         <ReactPaginate
