@@ -91,4 +91,5 @@ export type Response<T> = {
 export type PageParam = {
   page: number;
   size: number;
+  sort: string;
 };

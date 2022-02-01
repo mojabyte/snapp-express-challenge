@@ -5,6 +5,7 @@ import ReactPaginate from 'react-paginate';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PulseLoader } from 'react-spinners';
+import { useQueryParam, StringParam } from 'use-query-params';
 
 import { useProducts } from './data/HomeQueryHooks';
 import ProductItem from './components/product-item';
@@ -13,12 +14,14 @@ import { usePaginatedList } from './hooks/usePaginatedList';
 const Home = () => {
   const { ref, page, setPage, pageSize } = usePaginatedList();
 
+  const [sort, setSort] = useQueryParam('sort', StringParam);
+
   const {
     data: products,
     isLoading,
     error,
     isPreviousData,
-  } = useProducts({ page, size: pageSize });
+  } = useProducts({ page, size: pageSize, sort });
 
   const pageCount = useMemo(() => {
     return products ? Math.floor(products.meta.pagination.total / pageSize) + 1 : 10;
@@ -34,6 +37,29 @@ const Home = () => {
     const fillSize = pageSize - products?.product_variations.length;
     return [...new Array(fillSize > 0 ? fillSize : 0)].map(() => Math.random());
   }, [pageSize, products?.product_variations.length]);
+
+  const renderSort = useCallback(() => {
+    if (isLoading) {
+      return null;
+    }
+
+    return (
+      <>
+        <label className="px-2">مرتب سازی: </label>
+        <select
+          onChange={e => setSort(e.target.value === 'default' ? undefined : e.target.value)}
+          value={sort}
+        >
+          <option value="default">{products?.meta.sort.default_title}</option>
+          {products?.meta.sort.results.map(({ name, translation, enabled }) => (
+            <option key={name} value={name}>
+              {translation}
+            </option>
+          ))}
+        </select>
+      </>
+    );
+  }, [products?.meta.sort.results, sort]);
 
   const renderList = useCallback(() => {
     if (isLoading) {
@@ -80,6 +106,7 @@ const Home = () => {
 
   return (
     <div ref={ref} className="flex flex-col flex-1 h-full bg-gray-100">
+      <div className="flex items-center p-4 h-16 bg-white shadow-sm">{renderSort()}</div>
       <div className="flex flex-1 overflow-hidden relative">
         {renderList()}
         {renderLoading()}

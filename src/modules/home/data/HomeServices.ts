@@ -8,6 +8,7 @@ export async function getProducts(pageParam: PageParam) {
       params: {
         page: pageParam.page || 0,
         size: pageParam.size || 12,
+        sort: pageParam.sort,
       },
     }
   );
