@@ -3,11 +3,12 @@ import './styles/home.scss';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import ReactPaginate from 'react-paginate';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PulseLoader } from 'react-spinners';
 
 import { useProducts } from './data/HomeQueryHooks';
 import ProductItem from './components/product-item';
 import { usePaginatedList } from './hooks/usePaginatedList';
-import { PulseLoader } from 'react-spinners';
 
 const Home = () => {
   const { ref, page, setPage, pageSize } = usePaginatedList();
@@ -45,11 +46,19 @@ const Home = () => {
 
     return (
       <div className="grid-list">
-        {products.product_variations.map(data => (
-          <div key={data.id}>
-            <ProductItem data={data} />
-          </div>
-        ))}
+        <AnimatePresence exitBeforeEnter>
+          {products.product_variations.map((data, index) => (
+            <motion.div
+              key={data.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ delay: (index * 0.3) / pageSize, duration: 0.2 }}
+            >
+              <ProductItem data={data} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
 
         {fillArray.map(id => (
           <div key={id} />

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^0.25.0",
+    "framer-motion": "^6.2.3",
     "query-string": "^7.1.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
