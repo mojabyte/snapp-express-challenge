@@ -1,21 +1,35 @@
 import './styles/home.scss';
 
-import React from 'react';
-import { useQueryParam, NumberParam } from 'use-query-params';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import ReactPaginate from 'react-paginate';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 
 import { useProducts } from './data/HomeQueryHooks';
 import ProductItem from './components/product-item';
+import { usePaginatedList } from './hooks/usePaginatedList';
 
 const Home = () => {
-  const [page, setPage] = useQueryParam('page', NumberParam);
-  const [pageSize, setPageSize] = useQueryParam('size', NumberParam);
-  const { data: products, isLoading, error } = useProducts({ page, size: pageSize });
-  console.log(products);
+  const { ref, page, setPage, pageSize } = usePaginatedList();
 
-  const renderList = () => {
-    if (isLoading) {
+  const { data: products, isLoading, error, isFetching } = useProducts({ page, size: pageSize });
+
+  const pageCount = useMemo(() => {
+    return products ? Math.floor(products.meta.pagination.total / pageSize) + 1 : 10;
+  }, [pageSize, products?.meta.pagination.total]);
+
+  useEffect(() => {
+    if (products && products.meta.pagination.total < (page + 1) * pageSize) {
+      setPage(pageCount - 1);
+    }
+  }, [pageSize, pageCount]);
+
+  const fillArray = useMemo(() => {
+    const fillSize = pageSize - products?.product_variations.length;
+    return [...new Array(fillSize > 0 ? fillSize : 0)].map(() => Math.random());
+  }, [pageSize, products?.product_variations.length]);
+
+  const renderList = useCallback(() => {
+    if (isLoading || isFetching) {
       return <div>loading...</div>;
     }
 
@@ -24,28 +38,22 @@ const Home = () => {
     }
 
     return (
-      <div className="flex-1 grid grid-cols-6 gap-3 m-3">
+      <div className="grid-list">
         {products.product_variations.map(data => (
-          <div className="flex" key={data.id}>
+          <div key={data.id}>
             <ProductItem data={data} />
           </div>
         ))}
+
+        {fillArray.map(id => (
+          <div key={id} />
+        ))}
       </div>
     );
-  };
+  }, [isLoading, isFetching, error, products?.product_variations, fillArray]);
 
   return (
-    <div className="flex flex-col flex-1 h-full bg-gray-100">
-      <div>
-        <label>page size:</label>
-        <input
-          className="border"
-          type="number"
-          value={pageSize}
-          onChange={e => setPageSize(e.target.valueAsNumber)}
-        />
-      </div>
-
+    <div ref={ref} className="flex flex-col flex-1 h-full bg-gray-100">
       <div className="flex flex-1">{renderList()}</div>
 
       <div dir="ltr">
@@ -54,10 +62,11 @@ const Home = () => {
           nextLabel={<BiChevronRight />}
           previousLabel={<BiChevronLeft />}
           initialPage={page}
+          forcePage={page}
           onPageChange={page => {
             setPage(page.selected);
           }}
-          pageCount={products ? products.meta.pagination.total / pageSize : 10}
+          pageCount={pageCount}
           pageLabelBuilder={page => page.toLocaleString('fa')}
           renderOnZeroPageCount={null}
         />
