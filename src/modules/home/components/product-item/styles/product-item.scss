@@ -3,11 +3,11 @@
   min-height: 0;
 
   & .image-wrapper {
-    @apply flex items-center justify-center p-5;
-    max-height: 8rem;
+    @apply flex items-center justify-center p-4;
+    max-height: 7rem;
 
     & img {
-      max-height: 8rem;
+      max-height: 7rem;
     }
   }
 
@@ -17,6 +17,6 @@
 
   & .price {
     @apply flex items-center p-1 text-lg mx-5 my-2;
-    max-height: 4rem;
+    max-height: 3rem;
   }
 }

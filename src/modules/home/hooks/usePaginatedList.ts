@@ -13,7 +13,7 @@ export function usePaginatedList() {
     let height_breakpoint = 'xs';
 
     for (let [key, value] of Object.entries(WIDTH_BREAKPOINTS)) {
-      if (width > value) {
+      if (width >= value) {
         width_breakpoint = key;
       } else {
         break;
@@ -21,7 +21,7 @@ export function usePaginatedList() {
     }
 
     for (let [key, value] of Object.entries(HEIGHT_BREAKPOINTS)) {
-      if (height > value) {
+      if (height >= value) {
         height_breakpoint = key;
       } else {
         break;

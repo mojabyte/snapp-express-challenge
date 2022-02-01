@@ -6,6 +6,7 @@ import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PulseLoader } from 'react-spinners';
 import { useQueryParam, StringParam } from 'use-query-params';
+import { useMediaQuery } from 'react-responsive';
 
 import { useProducts } from './data/HomeQueryHooks';
 import ProductItem from './components/product-item';
@@ -16,6 +17,11 @@ const Home = () => {
 
   const [sort, setSort] = useQueryParam('sort', StringParam);
 
+  const isMobile = useMediaQuery({ maxWidth: 580 });
+  const isTablet = useMediaQuery({
+    maxWidth: 768,
+  });
+
   const {
     data: products,
     isLoading,
@@ -24,7 +30,7 @@ const Home = () => {
   } = useProducts({ page, size: pageSize, sort });
 
   const pageCount = useMemo(() => {
-    return products ? Math.floor(products.meta.pagination.total / pageSize) + 1 : 10;
+    return products ? Math.ceil(products.meta.pagination.total / pageSize) : 10;
   }, [pageSize, products?.meta.pagination.total]);
 
   useEffect(() => {
@@ -122,6 +128,7 @@ const Home = () => {
           onPageChange={page => {
             setPage(page.selected);
           }}
+          marginPagesDisplayed={isMobile ? 0 : isTablet ? 1 : 3}
           pageCount={pageCount}
           pageLabelBuilder={page => page.toLocaleString('fa')}
           renderOnZeroPageCount={null}
